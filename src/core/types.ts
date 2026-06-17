@@ -19,20 +19,25 @@ export interface MerchantInfo {
 }
 
 export interface MerchantConfig {
+  id?: string;
   staticPayload: string;
   merchantInfo: MerchantInfo;
   maxAmount: number;
   savedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface LocalTransaction {
   id: string;
+  merchantId?: string;
   baseAmount?: number;
   uniqueCode?: number;
   amount: number;
   qrisPayload: string;
   createdAt: string;
   status: TransactionStatus;
+  checkedAt?: string;
 }
 
 export interface ValidationResult {

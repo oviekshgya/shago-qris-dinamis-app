@@ -1,79 +1,64 @@
 import { useEffect, useState } from 'react';
-import { convertStaticToDynamicPayload } from '../core/qrisConverter';
-import type { LocalTransaction, MerchantConfig } from '../core/types';
+import type { FormEvent } from 'react';
 import { generateUniqueCode } from '../core/uniqueCode';
 import { validateAmount } from '../core/validator';
+import { useAppContext } from '../context/AppContext';
 
 interface AmountFormProps {
-  merchantConfig: MerchantConfig | null;
-  transactions: LocalTransaction[];
-  onGenerated: (transaction: LocalTransaction) => void;
+  onGenerated?: () => void;
 }
 
-export function AmountForm({ merchantConfig, transactions, onGenerated }: AmountFormProps) {
+export function AmountForm({ onGenerated }: AmountFormProps) {
+  const { currentMerchant, transactions, generateTransaction, apiStatus } = useAppContext();
   const [amount, setAmount] = useState('');
   const [useUniqueCode, setUseUniqueCode] = useState(true);
   const [proposedUniqueCode, setProposedUniqueCode] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const numericAmount = Number(amount);
+  const formattedAmount = amount ? numericAmount.toLocaleString('id-ID') : '';
 
   useEffect(() => {
-    if (!merchantConfig || !useUniqueCode || !Number.isFinite(numericAmount) || numericAmount < 1000) {
+    if (!currentMerchant || !useUniqueCode || !Number.isFinite(numericAmount) || numericAmount < 1000) {
       setProposedUniqueCode(null);
       return;
     }
 
     try {
-      setProposedUniqueCode(generateUniqueCode(numericAmount, merchantConfig.maxAmount, transactions));
+      setProposedUniqueCode(generateUniqueCode(numericAmount, currentMerchant.maxAmount, transactions));
     } catch {
       setProposedUniqueCode(null);
     }
-  }, [merchantConfig, numericAmount, transactions, useUniqueCode]);
+  }, [currentMerchant, numericAmount, transactions, useUniqueCode]);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!merchantConfig) {
+    if (!currentMerchant) {
       setError('QRIS static merchant belum diset. Buka tab Setup Merchant terlebih dahulu.');
       return;
     }
 
     const baseAmount = Number(amount);
-    const amountError = validateAmount(baseAmount, merchantConfig.maxAmount);
+    const amountError = validateAmount(baseAmount, currentMerchant.maxAmount);
 
     if (amountError) {
       setError(amountError);
       return;
     }
 
+    setIsGenerating(true);
     try {
-      const uniqueCode = useUniqueCode
-        ? (proposedUniqueCode ?? generateUniqueCode(baseAmount, merchantConfig.maxAmount, transactions))
-        : undefined;
-      const finalAmount = baseAmount + (uniqueCode ?? 0);
-      const finalAmountError = validateAmount(finalAmount, merchantConfig.maxAmount);
-
-      if (finalAmountError) {
-        setError(finalAmountError);
-        return;
-      }
-
-      const qrisPayload = convertStaticToDynamicPayload(merchantConfig.staticPayload, finalAmount);
-      onGenerated({
-        id: crypto.randomUUID(),
-        baseAmount,
-        uniqueCode,
-        amount: finalAmount,
-        qrisPayload,
-        createdAt: new Date().toISOString(),
-        status: 'UNVERIFIED',
-      });
+      await generateTransaction({ amount: baseAmount, useUniqueCode });
       setAmount('');
       setProposedUniqueCode(null);
       setError(null);
+      onGenerated?.();
     } catch (conversionError) {
       setError(conversionError instanceof Error ? conversionError.message : 'Gagal membuat QRIS nominal.');
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -82,41 +67,41 @@ export function AmountForm({ merchantConfig, transactions, onGenerated }: Amount
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
-      {!merchantConfig && (
-        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      {!currentMerchant && (
+        <div className="rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-100">
           QRIS static merchant belum diset. Kasir belum bisa generate QR.
         </div>
       )}
 
       <div>
-        <label className="text-sm font-medium text-slate-800" htmlFor="amount">
+        <label className="text-sm font-medium text-slate-200" htmlFor="amount">
           Nominal pembayaran
         </label>
-        <div className="mt-2 flex rounded-md border border-slate-300 bg-white ring-mint/30 focus-within:border-mint focus-within:ring-4">
-          <span className="border-r border-slate-200 px-3 py-2 text-sm text-slate-500">Rp</span>
+        <div className="mt-2 flex rounded-md border border-white/10 bg-shago-black/70 ring-red-500/20 focus-within:border-red-400 focus-within:ring-4">
+          <span className="border-r border-white/10 px-3 py-3 text-sm text-slate-400">Rp</span>
           <input
             id="amount"
-            className="w-full rounded-r-md px-3 py-2 text-sm outline-none"
+            className="w-full rounded-r-md bg-transparent px-3 py-3 text-base text-white outline-none"
             inputMode="numeric"
-            value={amount}
+            value={formattedAmount}
             onChange={(event) => setAmount(event.target.value.replace(/[^\d]/g, ''))}
-            placeholder="15000"
+            placeholder="15.000"
           />
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          Minimal Rp1.000. Maksimal Rp{(merchantConfig?.maxAmount ?? 10_000_000).toLocaleString('id-ID')}.
+          Minimal Rp1.000. Maksimal Rp{(currentMerchant?.maxAmount ?? 10_000_000).toLocaleString('id-ID')}. API {apiStatus}.
         </p>
       </div>
 
-      <label className="flex items-start gap-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+      <label className="flex items-start gap-3 rounded-md border border-white/10 bg-white/[0.04] p-3">
         <input
-          className="mt-1 h-4 w-4 rounded border-slate-300 text-mint focus:ring-mint"
+          className="mt-1 h-4 w-4 rounded border-slate-600 text-red-600 focus:ring-red-500"
           type="checkbox"
           checked={useUniqueCode}
           onChange={(event) => setUseUniqueCode(event.target.checked)}
         />
-        <span className="text-sm text-slate-700">
-          <span className="block font-medium text-slate-900">Tambahkan kode unik otomatis</span>
+        <span className="text-sm text-slate-300">
+          <span className="block font-medium text-white">Tambahkan kode unik otomatis</span>
           <span className="mt-1 block text-xs text-slate-500">
             Kode unik random 1-99 ditambahkan ke nominal QRIS supaya pembayaran dengan nominal dasar yang sama bisa
             dibedakan saat cek manual tanpa selisih terlalu besar.
@@ -124,16 +109,16 @@ export function AmountForm({ merchantConfig, transactions, onGenerated }: Amount
         </span>
       </label>
 
-      {merchantConfig && amount && (
-        <div className="rounded-md border border-slate-200 bg-white p-3 text-sm">
+      {currentMerchant && amount && (
+        <div className="rounded-md border border-white/10 bg-white/[0.04] p-3 text-sm">
           <p className="mb-3 text-xs font-semibold uppercase text-slate-500">Preview QR berikutnya</p>
           <div className="flex justify-between gap-3">
             <span className="text-slate-500">Nominal dasar</span>
-            <span className="font-medium text-slate-900">Rp{numericAmount.toLocaleString('id-ID')}</span>
+            <span className="font-medium text-white">Rp{numericAmount.toLocaleString('id-ID')}</span>
           </div>
           <div className="mt-2 flex justify-between gap-3">
             <span className="text-slate-500">Kode unik random</span>
-            <span className="font-medium text-slate-900">
+            <span className="font-medium text-white">
               {useUniqueCode && proposedUniqueCode
                 ? `+Rp${proposedUniqueCode.toLocaleString('id-ID')}`
                 : useUniqueCode
@@ -141,21 +126,21 @@ export function AmountForm({ merchantConfig, transactions, onGenerated }: Amount
                   : 'Tidak dipakai'}
             </span>
           </div>
-          <div className="mt-2 flex justify-between gap-3 border-t border-slate-100 pt-2">
-            <span className="font-medium text-slate-900">Total QRIS</span>
-            <span className="font-semibold text-ink">Rp{previewAmount.toLocaleString('id-ID')}</span>
+          <div className="mt-2 flex justify-between gap-3 border-t border-white/10 pt-2">
+            <span className="font-medium text-white">Total QRIS</span>
+            <span className="font-semibold text-red-200">Rp{previewAmount.toLocaleString('id-ID')}</span>
           </div>
         </div>
       )}
 
-      {error && <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</div>}
+      {error && <div className="rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-100">{error}</div>}
 
       <button
         type="submit"
-        className="rounded-md bg-mint px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-        disabled={!merchantConfig}
+        className="min-h-12 w-full rounded-md bg-shago-gradient px-4 py-3 text-sm font-semibold text-white shadow-red-glow transition hover:opacity-95 disabled:cursor-not-allowed disabled:bg-none disabled:bg-slate-700 disabled:shadow-none sm:w-auto"
+        disabled={!currentMerchant || isGenerating}
       >
-        Generate QR
+        {isGenerating ? 'Generating...' : 'Generate QRIS'}
       </button>
     </form>
   );

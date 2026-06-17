@@ -1,0 +1,1405 @@
+{
+  "info": {
+    "_postman_id": "5570a5dc-2de4-4fc3-9b0b-ea572c799a41",
+    "name": "Shago QRIS API",
+    "description": "Postman collection untuk Shago QRIS API. Set `base_url` dan `api_key` di collection variables sebelum menjalankan request. Jika env `API_KEY` server kosong, header `X-API-Key` akan diabaikan oleh API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45863628",
+    "_collection_link": "https://go.postman.co/collection/45863628-5570a5dc-2de4-4fc3-9b0b-ea572c799a41?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://generate-qris.shagya-tech.my.id/health",
+              "protocol": "https",
+              "host": [
+                "generate-qris",
+                "shagya-tech",
+                "my",
+                "id"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Cek status API."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"status\": \"ok\"\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-API-Key",
+                    "value": "wrong-api-key"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"UNAUTHORIZED\",\n    \"message\": \"unauthorized\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Merchants",
+      "item": [
+        {
+          "name": "Setup Merchant QRIS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/setup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "setup"
+              ]
+            },
+            "description": "Simpan atau update QRIS static merchant default. `staticPayload` harus QRIS static valid dengan CRC benar."
+          },
+          "response": [
+            {
+              "name": "200 Merchant Saved",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/setup",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "setup"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"default\",\n    \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n    \"merchantInfo\": {\n      \"merchantName\": \"SHAGO STORE\",\n      \"merchantCity\": \"JAKARTA SELATAN\",\n      \"merchantCategoryCode\": \"5812\",\n      \"countryCode\": \"ID\",\n      \"pointOfInitiationMethod\": \"11\",\n      \"merchantAccountTag\": \"26\",\n      \"merchantAccountProvider\": \"QRIS\",\n      \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n    },\n    \"maxAmount\": 10000000,\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"updatedAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "400 Invalid QRIS Payload",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staticPayload\": \"invalid-qris\",\n  \"maxAmount\": 10000000\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/setup",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "setup"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"INVALID_INPUT\",\n    \"message\": \"invalid input: invalid qris payload\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current Merchant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/current",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "current"
+              ]
+            },
+            "description": "Ambil konfigurasi QRIS merchant default."
+          },
+          "response": [
+            {
+              "name": "200 Current Merchant",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/current",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "current"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"default\",\n    \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n    \"merchantInfo\": {\n      \"merchantName\": \"SHAGO STORE\",\n      \"merchantCity\": \"JAKARTA SELATAN\",\n      \"merchantCategoryCode\": \"5812\",\n      \"countryCode\": \"ID\",\n      \"pointOfInitiationMethod\": \"11\",\n      \"merchantAccountTag\": \"26\",\n      \"merchantAccountProvider\": \"QRIS\",\n      \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n    },\n    \"maxAmount\": 10000000,\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"updatedAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "404 Merchant Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/current",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "current"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"NOT_FOUND\",\n    \"message\": \"resource not found\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reset Merchant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/current",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "current"
+              ]
+            },
+            "description": "Hapus konfigurasi merchant default."
+          },
+          "response": [
+            {
+              "name": "200 Merchant Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/current",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "current"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"deleted\": true\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Merchants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants?limit=50&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Default 50, maksimum 100"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "List konfigurasi merchant QRIS."
+          },
+          "response": [
+            {
+              "name": "200 Merchants",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants?limit=50&offset=0",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50",
+                      "description": "Default 50, maksimum 100"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "description": "List konfigurasi merchant QRIS."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"store-a\",\n      \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n      \"merchantInfo\": {\n        \"merchantName\": \"SHAGO STORE\",\n        \"merchantCity\": \"JAKARTA SELATAN\",\n        \"merchantCategoryCode\": \"5812\",\n        \"countryCode\": \"ID\",\n        \"pointOfInitiationMethod\": \"11\",\n        \"merchantAccountTag\": \"26\",\n        \"merchantAccountProvider\": \"QRIS\",\n        \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n      },\n      \"maxAmount\": 10000000,\n      \"createdAt\": \"2026-06-17T03:00:00Z\",\n      \"updatedAt\": \"2026-06-17T03:00:00Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Setup Merchant QRIS by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            },
+            "description": "Simpan atau update QRIS static untuk merchant tertentu. `merchant_id` harus 2-64 karakter dan hanya berisi huruf, angka, underscore, atau dash."
+          },
+          "response": [
+            {
+              "name": "200 Merchant Saved",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Simpan atau update QRIS static untuk merchant tertentu. `merchant_id` harus 2-64 karakter dan hanya berisi huruf, angka, underscore, atau dash."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"store-a\",\n    \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n    \"merchantInfo\": {\n      \"merchantName\": \"SHAGO STORE\",\n      \"merchantCity\": \"JAKARTA SELATAN\",\n      \"merchantCategoryCode\": \"5812\",\n      \"countryCode\": \"ID\",\n      \"pointOfInitiationMethod\": \"11\",\n      \"merchantAccountTag\": \"26\",\n      \"merchantAccountProvider\": \"QRIS\",\n      \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n    },\n    \"maxAmount\": 10000000,\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"updatedAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "400 Invalid Merchant ID",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Simpan atau update QRIS static untuk merchant tertentu. `merchant_id` harus 2-64 karakter dan hanya berisi huruf, angka, underscore, atau dash."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"INVALID_INPUT\",\n    \"message\": \"invalid input: merchant id must be 2-64 chars and contain only letters, numbers, underscore, or dash\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Merchant QRIS by ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            },
+            "description": "Update/upsert QRIS static untuk merchant tertentu."
+          },
+          "response": [
+            {
+              "name": "200 Merchant Updated",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n  \"maxAmount\": 10000000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Update/upsert QRIS static untuk merchant tertentu."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"store-a\",\n    \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n    \"merchantInfo\": {\n      \"merchantName\": \"SHAGO STORE\",\n      \"merchantCity\": \"JAKARTA SELATAN\",\n      \"merchantCategoryCode\": \"5812\",\n      \"countryCode\": \"ID\",\n      \"pointOfInitiationMethod\": \"11\",\n      \"merchantAccountTag\": \"26\",\n      \"merchantAccountProvider\": \"QRIS\",\n      \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n    },\n    \"maxAmount\": 10000000,\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"updatedAt\": \"2026-06-17T03:10:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Merchant by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            },
+            "description": "Ambil konfigurasi QRIS merchant tertentu."
+          },
+          "response": [
+            {
+              "name": "200 Merchant",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Ambil konfigurasi QRIS merchant tertentu."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"store-a\",\n    \"staticPayload\": \"00020101021126590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605802ID5911SHAGO STORE6015JAKARTA SELATAN610512345630482B3\",\n    \"merchantInfo\": {\n      \"merchantName\": \"SHAGO STORE\",\n      \"merchantCity\": \"JAKARTA SELATAN\",\n      \"merchantCategoryCode\": \"5812\",\n      \"countryCode\": \"ID\",\n      \"pointOfInitiationMethod\": \"11\",\n      \"merchantAccountTag\": \"26\",\n      \"merchantAccountProvider\": \"QRIS\",\n      \"merchantAccountGui\": \"ID.CO.QRIS.WWW\"\n    },\n    \"maxAmount\": 10000000,\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"updatedAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "404 Merchant Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Ambil konfigurasi QRIS merchant tertentu."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"NOT_FOUND\",\n    \"message\": \"resource not found\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Merchant by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            },
+            "description": "Hapus konfigurasi QRIS merchant tertentu."
+          },
+          "response": [
+            {
+              "name": "200 Merchant Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}"
+                  ]
+                },
+                "description": "Hapus konfigurasi QRIS merchant tertentu."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"deleted\": true\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "QRIS",
+      "item": [
+        {
+          "name": "Generate QRIS Nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchantId\": \"default\",\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/qris/generate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "qris",
+                "generate"
+              ]
+            },
+            "description": "Generate QRIS dynamic bernominal dan simpan transaksi lokal. Jika `merchantId` tidak dikirim, API memakai merchant default. `useUniqueCode=true` menambahkan kode unik 1 sampai 99 selama tidak melewati `maxAmount`."
+          },
+          "response": [
+            {
+              "name": "201 Transaction Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchantId\": \"default\",\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/qris/generate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "qris",
+                    "generate"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"txn_1781674800000000000\",\n    \"baseAmount\": 10000,\n    \"uniqueCode\": 47,\n    \"amount\": 10047,\n    \"qrisPayload\": \"00020101021226590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605405100475802ID5911SHAGO STORE6015JAKARTA SELATAN61051234563048A81\",\n    \"status\": \"UNVERIFIED\",\n    \"merchantId\": \"default\",\n    \"createdAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "400 Amount Below Minimum",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 500,\n  \"useUniqueCode\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/qris/generate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "qris",
+                    "generate"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"INVALID_INPUT\",\n    \"message\": \"invalid input: amount minimum is 1000\"\n  }\n}"
+            },
+            {
+              "name": "409 Merchant QRIS Unset",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/qris/generate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "qris",
+                    "generate"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"MERCHANT_QRIS_UNSET\",\n    \"message\": \"merchant qris is not configured\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Generate QRIS Nominal by Merchant ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}/qris/generate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "merchants",
+                "{{merchant_id}}",
+                "qris",
+                "generate"
+              ]
+            },
+            "description": "Generate QRIS dynamic untuk merchant tertentu dari path URL."
+          },
+          "response": [
+            {
+              "name": "201 Transaction Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}/qris/generate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}",
+                    "qris",
+                    "generate"
+                  ]
+                },
+                "description": "Generate QRIS dynamic untuk merchant tertentu dari path URL."
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"txn_1781674800000000000\",\n    \"baseAmount\": 10000,\n    \"uniqueCode\": 47,\n    \"amount\": 10047,\n    \"qrisPayload\": \"00020101021226590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605405100475802ID5911SHAGO STORE6015JAKARTA SELATAN61051234563048A81\",\n    \"status\": \"UNVERIFIED\",\n    \"merchantId\": \"store-a\",\n    \"createdAt\": \"2026-06-17T03:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "409 Merchant QRIS Unset",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 10000,\n  \"useUniqueCode\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/merchants/{{merchant_id}}/qris/generate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "merchants",
+                    "{{merchant_id}}",
+                    "qris",
+                    "generate"
+                  ]
+                },
+                "description": "Generate QRIS dynamic untuk merchant tertentu dari path URL."
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"MERCHANT_QRIS_UNSET\",\n    \"message\": \"merchant qris is not configured\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/transactions?merchantId={{merchant_id}}&status=UNVERIFIED&limit=50&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "merchantId",
+                  "value": "{{merchant_id}}",
+                  "description": "Optional: filter transaksi per merchant"
+                },
+                {
+                  "key": "status",
+                  "value": "UNVERIFIED",
+                  "description": "Optional: UNVERIFIED atau CHECKED"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Default 50, maksimum 100"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "List transaksi lokal. Kirim `merchantId` untuk filter per merchant."
+          },
+          "response": [
+            {
+              "name": "200 Transactions",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions?merchantId={{merchant_id}}&status=UNVERIFIED&limit=50&offset=0",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "merchantId",
+                      "value": "{{merchant_id}}"
+                    },
+                    {
+                      "key": "status",
+                      "value": "UNVERIFIED"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"txn_1781674800000000000\",\n      \"baseAmount\": 10000,\n      \"uniqueCode\": 47,\n      \"amount\": 10047,\n      \"qrisPayload\": \"00020101021226590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605405100475802ID5911SHAGO STORE6015JAKARTA SELATAN61051234563048A81\",\n      \"status\": \"UNVERIFIED\",\n      \"merchantId\": \"default\",\n      \"createdAt\": \"2026-06-17T03:00:00Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "200 Empty Transactions",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions?status=CHECKED&limit=50&offset=0",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "CHECKED"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark Transaction Checked",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/transactions/{{transaction_id}}/checked",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transactions",
+                "{{transaction_id}}",
+                "checked"
+              ]
+            },
+            "description": "Tandai transaksi sebagai sudah dicek manual oleh operator."
+          },
+          "response": [
+            {
+              "name": "200 Transaction Checked",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions/{{transaction_id}}/checked",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions",
+                    "{{transaction_id}}",
+                    "checked"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"txn_1781674800000000000\",\n    \"baseAmount\": 10000,\n    \"uniqueCode\": 47,\n    \"amount\": 10047,\n    \"qrisPayload\": \"00020101021226590014ID.CO.QRIS.WWW01189360091100234567890215ID10203040506075204581253033605405100475802ID5911SHAGO STORE6015JAKARTA SELATAN61051234563048A81\",\n    \"status\": \"CHECKED\",\n    \"merchantId\": \"default\",\n    \"createdAt\": \"2026-06-17T03:00:00Z\",\n    \"checkedAt\": \"2026-06-17T03:05:00Z\"\n  }\n}"
+            },
+            {
+              "name": "404 Transaction Not Found",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions/not-found/checked",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions",
+                    "not-found",
+                    "checked"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"NOT_FOUND\",\n    \"message\": \"resource not found\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Transaction",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/transactions/{{transaction_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transactions",
+                "{{transaction_id}}"
+              ]
+            },
+            "description": "Hapus transaksi lokal."
+          },
+          "response": [
+            {
+              "name": "200 Transaction Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions/{{transaction_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions",
+                    "{{transaction_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"deleted\": true\n  }\n}"
+            },
+            {
+              "name": "404 Transaction Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/transactions/not-found",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "transactions",
+                    "not-found"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": {\n    \"code\": \"NOT_FOUND\",\n    \"message\": \"resource not found\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{api_key}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "change-this-api-key",
+      "type": "string"
+    },
+    {
+      "key": "merchant_id",
+      "value": "store-a",
+      "type": "string"
+    },
+    {
+      "key": "transaction_id",
+      "value": "txn_1718524800000000000",
+      "type": "string"
+    }
+  ]
+}
